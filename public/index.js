@@ -1,5 +1,12 @@
 'use strict';
 
+function bookingPrince() {
+  for (var i = 0; i < events.length; i++) {
+    events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + events[i].persons * bars.find(element => element.id === events[i].barId).pricePerPerson;
+  }
+}
+const eventBarID = 'f944a3ff-591b-4d5b-9b67-c7e08cba9791';
+
 //list of bats
 //useful for ALL 5 steps
 //could be an array of objects that you fetched from api or database
@@ -146,6 +153,12 @@ const actors = [{
   }]
 }];
 
+console.log(bars);
+console.log(events);
+console.log(actors);
+
+bookingPrince()
+console.log("Après modification :")
 console.log(bars);
 console.log(events);
 console.log(actors);
