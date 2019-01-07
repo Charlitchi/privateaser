@@ -11,6 +11,9 @@ function bookingPrince() {
       peoplePrice*= 1 - 0.5;
     }
     events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + peoplePrice;
+    if (events[i].options.deductibleReduction) {
+      events[i].price += events[i].persons;
+    }
   }
 }
 
@@ -23,8 +26,12 @@ function commissionCalculusAndRepartition() {
     currentEvent.commission.insurance = totalCommission / 2;
     currentEvent.commission.treasury = currentEvent.persons;
     currentEvent.commission.privateaser = totalCommission - currentEvent.commission.insurance - currentEvent.commission.treasury;
+    if (events[i].options.deductibleReduction) {
+      currentEvent.commission.privateaser += events[i].persons;
+    }
   }
 }
+
 //list of bats
 //useful for ALL 5 steps
 //could be an array of objects that you fetched from api or database
