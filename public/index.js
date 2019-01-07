@@ -2,10 +2,17 @@
 
 function bookingPrince() {
   for (var i = 0; i < events.length; i++) {
-    events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + events[i].persons * bars.find(element => element.id === events[i].barId).pricePerPerson;
+    var peoplePrice = events[i].persons * bars.find(element => element.id === events[i].barId).pricePerPerson;
+    if (events[i].persons > 20) {
+      peoplePrice*= 1 - 0.1;
+    } else {
+      peoplePrice*= 1 - 0.3;
+    } else {
+      peoplePrice*= 1 - 0.5;
+    }
+    events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + peoplePrice;
   }
 }
-const eventBarID = 'f944a3ff-591b-4d5b-9b67-c7e08cba9791';
 
 //list of bats
 //useful for ALL 5 steps
@@ -153,12 +160,18 @@ const actors = [{
   }]
 }];
 
+console.log('bars');
 console.log(bars);
+console.log('events');
 console.log(events);
+console.log('actors');
 console.log(actors);
 
 bookingPrince()
 console.log("Après modification :")
+console.log('bars');
 console.log(bars);
+console.log('events');
 console.log(events);
+console.log('actors');
 console.log(actors);
