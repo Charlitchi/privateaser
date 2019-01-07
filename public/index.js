@@ -1,5 +1,79 @@
 'use strict';
 
+function bookingPrince() {
+  for (var i = 0; i < events.length; i++) {
+    var peoplePrice = events[i].persons * bars.find(element => element.id === events[i].barId).pricePerPerson;
+    if (events[i].persons > 10) {
+      peoplePrice *= 1 - 0.1;
+    } else if (events[i].persons > 20) {
+      peoplePrice *= 1 - 0.3;
+    } else if (events[i].persons > 60) {
+      peoplePrice *= 1 - 0.5;
+    }
+    events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + peoplePrice;
+    if (events[i].options.deductibleReduction) {
+      events[i].price += events[i].persons;
+    }
+  }
+}
+
+function commissionCalculusAndRepartition() {
+  var currentEvent;
+  var totalCommission;
+  for (var i = 0; i < events.length; i++) {
+    currentEvent = events[i];
+    totalCommission = events[i].price * 0.3;
+    currentEvent.commission.insurance = totalCommission / 2;
+    currentEvent.commission.treasury = currentEvent.persons;
+    currentEvent.commission.privateaser = totalCommission - currentEvent.commission.insurance - currentEvent.commission.treasury;
+    if (events[i].options.deductibleReduction) {
+      currentEvent.commission.privateaser += events[i].persons;
+    }
+  }
+}
+
+function payActors() {
+  // Declaration
+  var currentEventinActors;
+  var currentPayement;
+  var currentEventInEvents;
+  var totalCommission;
+
+  // Loop around the events in the 'actors' array
+  for (var i = 0; i < actors.length; i++) {
+    currentEventinActors = actors[i];
+
+    // Loop in the payment
+    for (var j = 0; j < currentEventinActors.payment.length; j++) {
+      currentPayement = currentEventinActors.payment[j];
+      // Find the event that correspond in the 'events' array
+      currentEventInEvents = events.find(element => element.id === currentEventinActors.eventId);
+      // Evaluation the total commission of the current Event
+      totalCommission = currentEventInEvents.commission.insurance + currentEventInEvents.commission.treasury + currentEventInEvents.commission.privateaser;
+      switch (currentPayement.who) {
+        case 'booker':
+          currentPayement.amount = currentEventInEvents.price;
+          break;
+        case 'bar':
+          currentPayement.amount = currentEventInEvents.price - totalCommission;
+          break;
+        case 'insurance':
+          currentPayement.amount = currentEventInEvents.commission.insurance;
+          break;
+        case 'treasury':
+          currentPayement.amount = currentEventInEvents.commission.treasury;
+          break;
+        case 'privateaser':
+          currentPayement.amount = currentEventInEvents.commission.privateaser;
+          break;
+      }
+      currentEventInEvents = null;
+      currentPayement = null;
+      totalCommission = null;
+    }
+    currentEventinActors = null;
+  }
+}
 //list of bats
 //useful for ALL 5 steps
 //could be an array of objects that you fetched from api or database
@@ -60,7 +134,7 @@ const events = [{
   'id': '94dab739-bd93-44c0-9be1-52dd07baa9f6',
   'booker': 'otacos',
   'barId': '6e06c9c0-4ab0-4d66-8325-c5fa60187cf8',
-  'distance': 5,
+  'time': 5,
   'persons': 80,
   'options': {
     'deductibleReduction': true
@@ -146,6 +220,36 @@ const actors = [{
   }]
 }];
 
+console.log('bars');
 console.log(bars);
+console.log('events');
 console.log(events);
+console.log('actors');
+console.log(actors);
+
+bookingPrince();
+console.log("After price calculus:")
+console.log('bars');
+console.log(bars);
+console.log('events');
+console.log(events);
+console.log('actors');
+console.log(actors);
+
+commissionCalculusAndRepartition();
+console.log("After commission calculus:")
+console.log('bars');
+console.log(bars);
+console.log('events');
+console.log(events);
+console.log('actors');
+console.log(actors);
+
+payActors();
+console.log("After payment:")
+console.log('bars');
+console.log(bars);
+console.log('events');
+console.log(events);
+console.log('actors');
 console.log(actors);
