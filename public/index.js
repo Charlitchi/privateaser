@@ -3,17 +3,28 @@
 function bookingPrince() {
   for (var i = 0; i < events.length; i++) {
     var peoplePrice = events[i].persons * bars.find(element => element.id === events[i].barId).pricePerPerson;
-    if (events[i].persons > 20) {
+    if (events[i].persons > 10) {
       peoplePrice*= 1 - 0.1;
-    } else {
+    } else if (events[i].persons > 20) {
       peoplePrice*= 1 - 0.3;
-    } else {
+    } else if (events[i].persons > 60) {
       peoplePrice*= 1 - 0.5;
     }
     events[i].price = events[i].time * bars.find(element => element.id === events[i].barId).pricePerHour + peoplePrice;
   }
 }
 
+function commissionCalculusAndRepartition() {
+  var currentEvent;
+  var totalCommission;
+  for (var i = 0; i < events.length; i++) {
+    currentEvent = events[i];
+    totalCommission = events[i].price * 0.3;
+    currentEvent.commission.insurance = totalCommission / 2;
+    currentEvent.commission.treasury = currentEvent.persons;
+    currentEvent.commission.privateaser = totalCommission - currentEvent.commission.insurance - currentEvent.commission.treasury;
+  }
+}
 //list of bats
 //useful for ALL 5 steps
 //could be an array of objects that you fetched from api or database
@@ -167,8 +178,17 @@ console.log(events);
 console.log('actors');
 console.log(actors);
 
-bookingPrince()
-console.log("Après modification :")
+bookingPrince();
+console.log("After price calculus:")
+console.log('bars');
+console.log(bars);
+console.log('events');
+console.log(events);
+console.log('actors');
+console.log(actors);
+
+commissionCalculusAndRepartition();
+console.log("After commission calculus:")
 console.log('bars');
 console.log(bars);
 console.log('events');
